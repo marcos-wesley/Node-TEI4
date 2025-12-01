@@ -82,7 +82,8 @@ app.get('/', ToughtController.showToughts)
 
 
 conn 
-    .sync()
+    .sync({force: true})
+    //.sync()
     .then(() => {
         app.listen(3000)
     })
