@@ -1,4 +1,5 @@
 const { where } = require('sequelize')
+
 const User = require('../models/User')
 
 const bcrypt = require('bcryptjs')
@@ -19,6 +20,8 @@ module.exports = class AuthController {
         if(!user) {
             req.flash('message', 'Usuário não encontrado!')
             res.render('auth/login')
+
+            return
         }
 
         //check if passwords match
@@ -30,6 +33,15 @@ module.exports = class AuthController {
 
             return
         }
+
+        //initialize session
+        req.session.userid = user.id
+
+        req.flash('message', 'Autenticação realizada com sucesso!')
+
+        req.session.save(() => {
+            res.redirect('/')
+        })
     }
 
     static register(req, res) {
@@ -47,14 +59,6 @@ module.exports = class AuthController {
             return
         }
 
-        //initialize session
-        req.session.userid = user.id
-
-        req.flash('message', 'Autenticação realizada com sucesso!')
-
-        req.session.save(() => {
-            res.redirect('/')
-        })
 
         //check if user exists
 
